@@ -1,0 +1,10 @@
+FROM centos:centos7
+RUN yum update -y
+RUN yum group install "Development Tools" -y
+
+ADD https://archive.apache.org/dist/httpd/httpd-2.2.3.tar.gz /
+RUN tar -zxf httpd-2.2.3.tar.gz
+
+RUN cd /httpd-2.2.3 && ./configure --prefix=/usr/local/httpd-devel --with-included-apr --enable-so --enable-load-all-modules --enable-proxy --enable-mods-shared=most --enable-mpms-shared=all --disable-ssl --disable-deflate
+RUN cd /httpd-2.2.3 && make && make install
+ENV PATH="/usr/local/httpd-devel/bin:$PATH"

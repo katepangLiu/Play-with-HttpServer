@@ -1,0 +1,15 @@
+FROM centos:centos7
+RUN yum update -y
+RUN yum group install "Development Tools" -y
+
+ADD http://archive.apache.org/dist/httpd/httpd-2.4.1.tar.gz /
+RUN tar -zxf httpd-2.4.1.tar.gz
+
+ADD http://archive.apache.org/dist/apr/apr-1.4.6.tar.gz /
+RUN tar -zxf apr-1.4.6.tar.gz && mv apr-1.4.6 httpd-2.4.1/srclib/apr
+
+ADD http://archive.apache.org/dist/apr/apr-util-1.5.1.tar.gz /
+RUN tar -zxf apr-util-1.5.1.tar.gz && mv apr-util-1.5.1 httpd-2.4.1/srclib/apr-util
+
+RUN cd httpd-2.4.1 && ./buildconf && ./configure --enable-so --enable-ssl --enable-load-all-modules --enable-mpms-shared=all --with-included-apr --prefix=/usr/local/httpd-devel && make && make install
+ENV PATH="/usr/local/httpd-devel/bin:$PATH"
